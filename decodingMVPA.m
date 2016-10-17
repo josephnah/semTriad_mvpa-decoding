@@ -12,15 +12,17 @@ clear all; clc;
 
 %% Participant Setup
 par         = {};
-% par{end+1}  = {'p01'}; % SHA
-% par{end+1}  = {'p02'}; % PSS
+par{end+1}  = {'p01'}; % SHA
+par{end+1}  = {'p02'}; % PSS
 par{end+1}  = {'p03'}; % AJC
 % par{end+1}  = {'p04'}; % NKC
 disp('start svm')
 root_dir    = '/Volumes/macLab/01_brainVoyager/semDuo';
-bothMean    = [];
-allMean     = [];
 
+% empty matrices for data
+bothHemMean     = [];
+allMeanROI      = [];
+parMean         = [];
 % totalAcc    = [];
 totalInfo   = [];
 hem         = {'right','left'};
@@ -35,10 +37,12 @@ for n = 1:allPars
     par_dir     = fullfile(root_dir,par{n}{1}); % participant directory
     voi_dir     = fullfile(par_dir,'stats');    % voi/stats directory
     
+    bothHemMean     = [];
+    allMeanROI      = [];
     
     %% loop through hemisphere
     for h = 1:allHems;
-        allMean = [];
+        allMeanROI = [];
         cd(voi_dir); % cd to voi/stats dir
         % vind voi file for hemisphere
         if h == 1;
@@ -58,12 +62,12 @@ for n = 1:allPars
             test        = 'Test';
             
             voiName     = curVoi(v).Name;
-            avgMean     = [];
+            avgMeanPairs     = [];
             %% loop through ROIs
             for pairs = 1:4
                 pairNo = pairs*10;
                 totalInfo   = [];
-                totalAcc    = [];
+                allRunAcc    = [];
                 for r = 1:allRuns;
                     
                     % get name of each run file. Change accordingly to fit your output
@@ -96,26 +100,25 @@ for n = 1:allPars
                     featTest            = bvTestMVP.FeatureValues;                  % get the value of features (voxels)
                     sfeatT              = sparse(featTest);                         % sparse apart matrix "help sparse" for more info
                     
-                    % all this preparing...for these 2 goddamn lines. Two. God.
-                    % Damn. Lines. UGh. Anyays, utilizes LIBSVM as does BV,
-                    % hence needs to be installed to use.
+                    % The SVM part of the code. Utilizes LIBSVM as does BV
                     model               = svmtrain(classTrain,sfeat,'-t 0 -m 10000');            % train model, kernel = linear
                     [plab,acc,dvpe]     = svmpredict(classTest,featTest,model,'-q');                 % test model
                     
-                    %% try to print data into matrix for easy extraction
+                    %% Print data into matrix for easy extraction
                     fullInfo            = strcat(par{n},'_',runSearch,voiName);
                     totalInfo           = [totalInfo, fullInfo];
-                    totalAcc            = [totalAcc, acc(1)] % <--------- WRONG WRONG WRONG 
+                    allRunAcc            = [allRunAcc, acc(1)]; % accuracy for all runs (leave one run out & test on others)
                     
                 end
-                avgMean = [avgMean mean(totalAcc)];
+                avgMeanPairs = [avgMeanPairs mean(allRunAcc)]; % average for all 4 pairs
             end
-            allMean = [allMean; avgMean];
+            allMeanROI = [allMeanROI, avgMeanPairs]; % accuracy for all ROIs
         end
-        bothMean = [bothMean allMean];
+        
+        bothHemMean = [bothHemMean allMeanROI]; % accuracy for all ROIs (left then right)
     end
-%     parMean = [parMean bothMean];
+    parMean = [parMean; bothHemMean]; % accuracy for all participants
 end
 
 
-mean(totalAcc(1,:))
+mean(allRunAcc(1,:))
