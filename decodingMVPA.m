@@ -102,7 +102,7 @@ for n = 1:allPars
                     
                     % The SVM part of the code. Utilizes LIBSVM as does BV
                     model               = svmtrain(classTrain,sfeat,'-t 0 -m 10000');            % train model, kernel = linear
-                    [plab,acc,dvpe]     = svmpredict(classTest,featTest,model,'-q');                 % test model
+                    [plab,acc,dvpe]     = svmpredict(classTest,featTest,model,'-q');             % test model
                     
                     %% Print data into matrix for easy extraction
                     fullInfo            = strcat(par{n},'_',runSearch,voiName);
