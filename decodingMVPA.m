@@ -15,7 +15,7 @@ par         = {};
 par{end+1}  = {'p01'}; % SHA
 par{end+1}  = {'p02'}; % PSS
 par{end+1}  = {'p03'}; % AJC
-% par{end+1}  = {'p04'}; % NKC
+par{end+1}  = {'p04'}; % NKC
 disp('start svm')
 root_dir    = '/Volumes/macLab/01_brainVoyager/semDuo';
 
@@ -108,7 +108,7 @@ for n = 1:allPars
                     fullInfo            = strcat(par{n},'_',runSearch,voiName);
                     totalInfo           = [totalInfo, fullInfo];
                     allRunAcc            = [allRunAcc, acc(1)]; % accuracy for all runs (leave one run out & test on others)
-                    
+
                 end
                 avgMeanPairs = [avgMeanPairs mean(allRunAcc)]; % average for all 4 pairs
             end
