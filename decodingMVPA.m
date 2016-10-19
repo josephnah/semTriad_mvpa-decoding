@@ -46,9 +46,9 @@ for n = 1:allPars
         cd(voi_dir); % cd to voi/stats dir
         % vind voi file for hemisphere
         if h == 1;
-            voiFile     = dir('evc_rh.voi');       % find voi file
+            voiFile     = dir('evc_rh_combDV.voi');       % find voi file
         elseif h == 2;
-            voiFile     = dir('evc_lh.voi');       % find voi file
+            voiFile     = dir('evc_lh_combDV.voi');       % find voi file
         end
         
         voi         = fullfile(voiFile.name);   % extract voi file name
@@ -75,10 +75,10 @@ for n = 1:allPars
                     runNumber   = num2str(r);       % current run number (in string)
                     runSearch   = strcat(runName,runNumber,'_'); % the name of file to search
                     if h ==1
-                        mvpa_dir    = fullfile(par_dir,'stats','/mvpa/SR_left');    % voi/stats directory
+                        mvpa_dir    = fullfile(par_dir,'stats','/mvpa/EVC_combDV/SR_left');    % voi/stats directory
                         pairName    = 'SR_LEFT_';
                     elseif h == 2
-                        mvpa_dir    = fullfile(par_dir,'stats','/mvpa/SR_right');    % voi/stats directory
+                        mvpa_dir    = fullfile(par_dir,'stats','/mvpa/EVC_combDV/SR_right');    % voi/stats directory
                         pairName    = 'SR_RIGHT_';
                     end
                     cd(mvpa_dir)
