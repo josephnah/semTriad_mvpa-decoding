@@ -31,7 +31,7 @@ hem         = {'left','rght'};
 allPars     = size(par,2);  % total number of participants
 allRuns     = 8;            % total number of runs
 allHems     = size(hem,2);  % only 2 hemispheres
-allPairs    = 2;            % total # of pairs
+allPairs    = 2;            % total # of pairs is 2 because comparing SR NR 
 learn       = 'Learn';
 test        = 'Test';
 runName     = 'RunLevelSplit-'; % damn you bv output..
@@ -69,7 +69,7 @@ for n = 1:allPars
             
             %% loop through ROIs
             for pairs = 1:allPairs
-                pairNo      = pairs*10;
+                pairNo      = '10';
                 totalInfo   = [];
                 allRunAcc   = [];
                 
@@ -78,16 +78,20 @@ for n = 1:allPars
                     % get name of each run file. Change accordingly to fit your output
                     runNumber   = num2str(r);       % current run number (in string)
                     runSearch   = strcat(runName,runNumber,'_'); % the name of file to search
-                    if h == 1
+                    if h == 1 && pairs == 1
                         pairName    = 'SR_RGHT_';
-                    elseif h == 2
+                    elseif h == 1 && pairs == 2
+                        pairName    = 'NR_RGHT_';
+                    elseif h == 2 && pairs == 1
                         pairName    = 'SR_LEFT_';
+                    elseif h == 2 && pairs == 2
+                        pairName    = 'NR_LEFT_';
                     end
-                    mvpa_dir    = fullfile(par_dir,'stats','/mvpa/allROIs/');
+                    mvpa_dir    = fullfile(par_dir,'stats','/mvpa/multiClass/');
                     cd(mvpa_dir)
                     
                     % specify, locate, and extract train mvp file names
-                    trainFileName       = strcat(runSearch,learn,'_',voiName,'_',pairName,num2str(pairNo),'*');     % name of mvp file used for training
+                    trainFileName       = strcat(runSearch,learn,'_',voiName,'_',pairName,num2str(pairNo),'*')     % name of mvp file used for training
                     mvpTrainFile        = dir(trainFileName);                       % find the mvp file
                     mvpTrainFileName    = fullfile(mvpTrainFile.name);              % the name of mvp file
                     bvTrainMVP          = BVQXfile(mvpTrainFileName);               % load mvpFile using BVQXfile f(x)
