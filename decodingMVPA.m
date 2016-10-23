@@ -86,25 +86,27 @@ for n = 1:allPars
         vom_dir = fullfile(par_dir,'vom'); % voi/stats directory
         cd(vom_dir);
         
-        vom     = dir('p01-*'); % finds all VOM files
+        vom     = dir('p0*.vom'); % finds all VOM files
         vomN    = size(vom,1); % # of VOIs (should be 14)
         
         %% run for all ROIs
         for vomIndex = 1:vomN
-            curVOM  = BVQXfile(vom(vomIndex).name);
-            vomVoxel                        = curVOM.VOM.Voxels;        % Get the x,y,z coordinates of all the voxels
-            vomData.Clust(vomIndex).Name    = myVOIs(vomIndex).Name;    % Set the VOIBetas.Clust(j) name as the given voi name.
-            [voiVoxelSize, columns]         = size(vomVoxel);           % # of voxels in the clust; x, y, z coordinates
-            
+            curVOM                          = BVQXfile(vom(vomIndex).name); % grabs 1 VOM 
+            vomVoxel                        = curVOM.VOM.Voxels;            % Get the x,y,z coordinates of all the voxels
+            vomData.Clust(vomIndex).Name    = curVOM.VOM.Name;              % Set the VOIBetas.Clust(j) name as the given voi name.
+            [voiVoxelSize, columns]         = size(vomVoxel);               % # of voxels in the clust; x, y, z coordinates
+            talVoxel                        = [];                           % empty matrix for data
+            nonTalVoxel                     = [];
             for voxel = 1:voiVoxelSize
-                x = voiVoxel(voxel,1);
-                y = voiVoxel(voxel,2);
-                z = voiVoxel(voxel,3);
+                x = vomVoxel(voxel,1);
+                y = vomVoxel(voxel,2);
+                z = vomVoxel(voxel,3);
                 
                 % convert the coordinates of the voxels (x,y,z) to
                 % matlab array indices (Mx, My, Mz)using Tal2Matlab
-                [Mx,My,Mz] = Tal2Matlab(x,y,z);
-                
+                [Mx,My,Mz]  = Tal2Matlab(x,y,z);
+                nonTalVoxel = [nonTalVoxel; x y z];
+                talVoxel    = [talVoxel; Mx My Mz];
             end
         end
 
